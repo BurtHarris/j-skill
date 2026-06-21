@@ -13,6 +13,7 @@ import { createCommand } from 'commander';
 import { runImport } from './commands/import.ts';
 import { runList } from './commands/list.ts';
 import { runRender } from './commands/render.ts';
+import { runExport } from './commands/export.ts';
 
 const program = createCommand('j-skill');
 program.description('A personal control plane for portable AI skills.');
@@ -33,6 +34,18 @@ program
   .description('List available skills')
   .action(() => {
     runList();
+  });
+
+program
+  .command('export [skills...]')
+  .description('Export skills to an AI platform format')
+  .requiredOption('--target <target>', 'export target: copilot-chat, claude-code')
+  .option('--output <path>', 'output path or directory (default depends on target)')
+  .action((skills: string[], options: { target: string; output?: string }) => {
+    runExport(skills, options).catch(err => {
+      console.error(`error: ${(err as Error).message}`);
+      process.exitCode = 1;
+    });
   });
 
 // Default: render a named skill (must be placed after named sub-commands)

@@ -13,3 +13,5 @@ export { saveManifest, loadManifest, listManifests } from './registry/manifest.t
 export { parseSource } from './resolvers/url.ts';
 export { Diagnostics } from './diagnostics.ts';
 export { getRegistryDir, getCommandsDir, getSkillsDir, getManifestsDir } from './registry/paths.ts';
+export { exportToCopilotChat } from './exporters/copilot-chat.ts';
+export { exportToClaudeCode } from './exporters/claude-code.ts';
