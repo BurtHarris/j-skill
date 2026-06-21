@@ -22,6 +22,8 @@ The user registry will live under a personal directory:
 
 **Rationale**: Flat structure at `~/.agents/` makes the registry discoverable without modification to shell profiles or path configuration. Subdirectories organize the two skill types clearly.
 
+**Clarification**: This registry is the primary storage location for `j-skill`. Copilot-specific files, instruction directories, agent definitions, or plugin locations are not the primary import target; they are potential future adapter/export targets.
+
 ## Skill File Naming
 
 - **Command-style skills**: `~/.agents/commands/<name>.md`
@@ -110,6 +112,16 @@ j-skill import gitea:instance.com/owner/repo
 
 **Rationale**: Manifest-driven lifecycle enables reliable cleanup, versioning, and future adapter composition.
 
+## Registry vs. Copilot Convention Boundary
+
+`j-skill` should resolve ambiguity in favor of a user-owned registry:
+
+1. Import collections into `~/.agents/` first
+2. Track provenance and lifecycle in `~/.agents/manifests/`
+3. Treat Copilot instruction files, prompts, agents, skills, and plugins as explicit adapter/export surfaces
+
+**Rationale**: Copilot’s framework may continue to evolve, but `j-skill` remains portable only if its internal storage model is stable and platform-agnostic.
+
 ## Design Notes
 
 These choices are **not locked**. Before implementation begins, the team should:
@@ -119,4 +131,3 @@ These choices are **not locked**. Before implementation begins, the team should:
 - Finalize manifest schema with consideration for error reporting integration
 - Consider import idempotency (re-import same collection—overwrite manifest? Merge? Error?)
 - Decide manifest naming strategy (ID-based vs. source-based vs. collision avoidance)
-

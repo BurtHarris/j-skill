@@ -1,0 +1,28 @@
+{
+  "name": "j-skill",
+  "version": "0.1.0",
+  "description": "A personal control plane for portable AI skills",
+  "scripts": {
+    "start": "node --experimental-strip-types src/cli.ts",
+    "test": "node --experimental-strip-types --test test/**/*.test.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BurtHarris/j-skill.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/BurtHarris/j-skill/issues"
+  },
+  "homepage": "https://github.com/BurtHarris/j-skill#readme",
+  "private": true,
+  "bin": {
+    "j-skill": "src/cli.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

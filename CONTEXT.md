@@ -120,6 +120,7 @@ The registry is yours, not your team's.
 - Importing never modifies projects or team configurations
 - Users own their behavior layer; teams don't enforce it via tool defaults
 - Complements the npm `skills` CLI, doesn't replace it
+- `j-skill` imports into its own user registry first, even when downstream adapters later target Copilot-specific concepts such as instructions, prompts, agents, skills, or plugins
 
 ### 3. GitHub Copilot-Centric (Multi-Platform Vision)
 
@@ -140,6 +141,8 @@ platform-specific output
 ```
 
 Adapters are optional. Core value works without them.
+
+**Clarification**: Copilot-specific conventions are adapter targets, not the source of truth. The source of truth remains the personal `j-skill` registry.
 
 ---
 
@@ -181,6 +184,8 @@ Adapters are optional. Core value works without them.
 - Track via manifests
 - Support clean install/uninstall
 - Compose multiple skill sources
+
+**Boundary**: importing into `j-skill` must not be conflated with importing into Copilot’s own directories or framework concepts. `j-skill` manages personal registry state first and only exports to Copilot through explicit, future adapter operations.
 
 ---
 

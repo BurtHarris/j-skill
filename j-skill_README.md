@@ -88,6 +88,8 @@ j-skill import mattpocock/skills
 
 This imports a skill collection into the local user registry, not into the current project.
 
+It also does **not** import directly into Copilot-specific instruction, prompt, agent, skill, or plugin locations. Those are future adapter/export targets layered on top of the user registry.
+
 ### Import Behavior
 
 Import should:
@@ -376,4 +378,3 @@ The MVP should remain small enough to build quickly while preserving the archite
 See [CONTEXT.md § Future Directions](CONTEXT.md#future-directions) for the complete vision.
 
 ---
-

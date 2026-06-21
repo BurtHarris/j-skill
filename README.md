@@ -2,11 +2,31 @@
 
 A personal control plane for portable AI skills.
 
-**Status**: Requirements gathering phase. Implementation pending.
+**Status**: Working prototype on `copilot-cli`; `main` remains the design baseline.
 
 ## Long-Lived Development Branches
 
 - **`copilot-cli`** — Long-lived branch for exercising GitHub Copilot CLI workflows, validating tool capabilities on this machine, and running tool-specific experiments without changing the main design baseline.
+
+## Current Prototype
+
+The `copilot-cli` branch now includes a first runnable Node.js + TypeScript prototype for the MVP workflow:
+
+```bash
+node --experimental-strip-types src/cli.ts import <source>
+node --experimental-strip-types src/cli.ts list
+node --experimental-strip-types src/cli.ts <skill>
+node --experimental-strip-types src/cli.ts <skill> --copy
+```
+
+Implemented in this branch:
+
+- local registry under `~/.agents` (Windows canonical path: `%USERPROFILE%\.agents`)
+- command skill resolution before package skill resolution
+- local and GitHub collection import
+- manifest persistence
+- frontmatter parsing with naming validation
+- stdout rendering and explicit clipboard copy
 
 ## What is j-skill?
 
@@ -44,26 +64,30 @@ j-skill concise --copy              # Use it anywhere, anytime
 - **j-skill_README.md** — Full requirements and product vision
 - **AGENTS.md** — Instructions for AI agents contributing to this project
 - **DESIGN.md** — Concrete implementation design decisions (registry layout, file structure, manifest format, etc.)
+- **tips.md** — User workflow tips for Copilot CLI and `j-skill`
 
 ## Status
 
-This project is in **requirements gathering and design phase**. We're defining:
+This project still contains the core requirements and design docs, and `copilot-cli` now carries an executable prototype aligned to them:
 - What the tool should do (requirements ✓)
 - How it should behave (behavior spec ✓)
-- Where things go and how they're stored (design decisions, ongoing)
+- Where things go and how they're stored (design decisions ✓ for the current prototype)
+- First end-to-end implementation slice (prototype ✓)
 
 Active branch note:
 - `main` remains the design and requirements baseline
 - `copilot-cli` is reserved for long-term Copilot CLI and related tool capability experiments
 
-No implementation code exists yet. Before coding begins, we'll finalize the registry structure, manifest format, and other implementation choices.
+Further work can harden the implementation, expand diagnostics, and add future adapter-facing seams without changing the user-owned registry model.
+
+The current design now resolves a key boundary explicitly: **imports land in the `j-skill` user registry first**, while Copilot-specific instructions, prompts, agents, skills, and plugins remain future adapter/export surfaces rather than the primary storage location.
 
 ## Next Steps
 
-1. Validate requirements with potential users
-2. Finalize registry and data structure design
-3. Choose technology stack (likely Node.js/TypeScript)
-4. Begin MVP implementation
+1. Harden the prototype into a production-ready CLI package
+2. Expand test coverage around import edge cases and diagnostics
+3. Add adapter extension points without compromising MVP safety
+4. Decide when to merge implementation learnings back into `main`
 
 ## References
 
