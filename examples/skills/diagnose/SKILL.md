@@ -1,4 +1,6 @@
 ---
+# Example skill — included for smoke-testing and to illustrate agent-skill package format.
+# This is not a production skill. Do not file bugs against example content.
 name: diagnose
 description: Debug methodically using evidence-based reasoning.
 tags:

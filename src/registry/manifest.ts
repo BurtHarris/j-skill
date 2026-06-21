@@ -1,3 +1,17 @@
+/**
+ * registry/manifest.ts — Import manifest persistence layer.
+ *
+ * Each successful `j-skill import` call writes one JSON manifest file to
+ * ~/.agents/manifests/<safe-name>.json. Manifests record the source, the list
+ * of imported files, and per-skill metadata so imports are reproducible.
+ *
+ * Schema version "0.1" is the initial format. If the schema changes in a
+ * breaking way, bump schemaVersion and add a migration path.
+ *
+ * Seam: the `adapters` field is intentionally left as an open Record for future
+ * platform adapter state (GitHub Copilot, Claude, etc.). It is always written as
+ * an empty object in MVP.
+ */
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { getManifestsDir } from './paths.ts';

@@ -1,3 +1,17 @@
+/**
+ * skills/resolver.ts — Skill lookup from the local registry.
+ *
+ * Resolves a skill name to its content using a fixed priority order:
+ *   1. ~/.agents/commands/<name>.md   (command-style single-file skill)
+ *   2. ~/.agents/skills/<name>/SKILL.md  (agent-skill package)
+ *
+ * The body returned has the YAML frontmatter block stripped so callers receive
+ * only the Markdown content suitable for rendering or copying.
+ *
+ * Seam: to support aliases, resolve alias→canonical-name mapping before the
+ * file-system lookup. To support project-scoped overrides, check a project
+ * registry first before falling through to the user registry paths.
+ */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { getCommandsDir, getSkillsDir } from '../registry/paths.ts';

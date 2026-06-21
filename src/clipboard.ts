@@ -1,3 +1,14 @@
+/**
+ * clipboard.ts — Platform-specific clipboard write helper.
+ *
+ * Writes a string to the system clipboard using the native OS utility:
+ *   - macOS  : pbcopy
+ *   - Windows: clip
+ *   - Linux  : xclip (falls back to xsel if xclip is not found)
+ *
+ * Seam: extend the else-branch to add support for additional platforms or
+ * clipboard utilities (e.g., wl-copy for Wayland).
+ */
 import { execSync } from 'node:child_process';
 
 export function copyToClipboard(text: string): void {

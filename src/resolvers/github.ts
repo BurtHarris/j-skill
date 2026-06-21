@@ -1,3 +1,21 @@
+/**
+ * resolvers/github.ts — GitHub Contents API fetcher.
+ *
+ * Provides two public functions used by the import command:
+ *   fetchGitHubContents(owner, repo, path?) — list directory entries
+ *   fetchGitHubFile(owner, repo, path)      — fetch and decode a single file
+ *
+ * Files returned by the Contents API are base64-encoded. Large files (>1 MB)
+ * have encoding='none' and an empty content field; those are fetched via the
+ * download_url instead.
+ *
+ * HTTP 301/302 redirects are followed manually because Node's built-in `https`
+ * module does not follow redirects automatically.
+ *
+ * Seam: httpsGet is a private helper; replace it with a fetch-based
+ * implementation (Node 18+) if a richer HTTP client is needed (e.g., auth
+ * headers, rate-limit handling, GITHUB_TOKEN support).
+ */
 import { get } from 'node:https';
 import { IncomingMessage } from 'node:http';
 

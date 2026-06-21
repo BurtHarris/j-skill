@@ -1,3 +1,16 @@
+/**
+ * resolvers/url.ts — Source string parser for `j-skill import <source>`.
+ *
+ * Recognises three source formats and returns a typed ParsedSource descriptor:
+ *   - Full GitHub HTTPS URL: https://github.com/owner/repo[.git]
+ *   - GitHub shorthand     : owner/repo
+ *   - Local path           : starts with '.', '/', or '~'
+ *
+ * Returns null for unrecognised inputs so the caller can emit a helpful error.
+ *
+ * Seam: add additional URL patterns here (e.g., other Git hosts or HTTPS
+ * archives) before the local-path check to avoid misclassifying them as paths.
+ */
 export interface ParsedSource {
   type: 'local' | 'github' | 'github-url';
   owner?: string;

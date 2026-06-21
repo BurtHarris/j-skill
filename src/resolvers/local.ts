@@ -1,3 +1,21 @@
+/**
+ * resolvers/local.ts — Local directory skill importer.
+ *
+ * Scans a local source directory for skill files and copies them into the user
+ * registry (~/.agents/). Expected source layout:
+ *
+ *   <sourceDir>/
+ *     commands/        — *.md files (command-style skills)
+ *     skills/          — subdirectories, each with a SKILL.md
+ *
+ * Validation errors are accumulated into the provided Diagnostics instance
+ * rather than thrown immediately, so ALL problems are reported before the
+ * import terminates.
+ *
+ * Seam: to support additional source layouts (e.g., flat directory of .md
+ * files), add a new scan branch before the return statement and push results
+ * into the same files/skills accumulators.
+ */
 import { existsSync, readdirSync, readFileSync, mkdirSync, copyFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { getCommandsDir, getSkillsDir } from '../registry/paths.ts';

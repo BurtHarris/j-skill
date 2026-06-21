@@ -1,3 +1,17 @@
+/**
+ * diagnostics.ts — Collect-all-errors-then-report diagnostic accumulator.
+ *
+ * Rather than throwing on the first error encountered during an operation (e.g.
+ * import), callers push errors and warnings into a Diagnostics instance, finish
+ * processing all items, then call report() once at the end. This ensures the
+ * user sees the complete set of problems in a single run.
+ *
+ * Output format mirrors the VSCode problem matcher convention:
+ *   [file: ]error|warning: <message>
+ *
+ * Seam: the Diagnostic interface is intentionally minimal; extend it (e.g. with
+ * line/column fields) if structured editor integration is needed later.
+ */
 export interface Diagnostic {
   severity: 'error' | 'warning';
   message: string;

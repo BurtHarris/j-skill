@@ -1,3 +1,21 @@
+/**
+ * skills/frontmatter.ts — YAML frontmatter parser and validator for skill files.
+ *
+ * Skill files (.md) use a YAML frontmatter block delimited by `---` lines.
+ * parseFrontmatter() extracts the YAML block and the remaining Markdown body.
+ * validateFrontmatter() enforces the required fields (`name`, `description`) and
+ * naming constraints (no spaces in `name`).
+ *
+ * Required frontmatter fields:
+ *   name        — unique identifier, no spaces
+ *   description — one-line summary shown by `j-skill list`
+ *
+ * Optional fields:
+ *   aliases, tags, targets — passed through as-is; not validated at MVP.
+ *
+ * Seam: add new required or optional field validation inside validateFrontmatter.
+ * Extend SkillFrontmatter with typed optional fields as the schema stabilises.
+ */
 import { load } from 'js-yaml';
 
 export interface SkillFrontmatter {

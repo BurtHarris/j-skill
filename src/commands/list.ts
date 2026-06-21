@@ -1,3 +1,14 @@
+/**
+ * commands/list.ts — Implementation of `j-skill list`.
+ *
+ * Reads the user's local registry and prints all available skills grouped by
+ * type: command-style skills first, then agent-skill packages. Each entry shows
+ * the skill name and its one-line description from the YAML frontmatter.
+ *
+ * Seam: listCommandSkills() and listAgentSkills() are private helpers; expose
+ * them (or a unified listSkills()) if programmatic access is needed (e.g.,
+ * shell completions or a future TUI).
+ */
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { getCommandsDir, getSkillsDir } from '../registry/paths.ts';

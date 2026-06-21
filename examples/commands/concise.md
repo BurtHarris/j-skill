@@ -1,4 +1,6 @@
 ---
+# Example skill — included for smoke-testing and to illustrate command-style skill format.
+# This is not a production skill. Do not file bugs against example content.
 name: concise
 description: Respond briefly and directly.
 tags:

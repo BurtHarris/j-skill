@@ -1,3 +1,19 @@
+/**
+ * commands/import.ts — Implementation of `j-skill import <source>`.
+ *
+ * Orchestrates the full import pipeline:
+ *   1. Parse the source string (URL / shorthand / local path)
+ *   2. Fetch skills from the appropriate resolver (GitHub or local filesystem)
+ *   3. Validate every skill — accumulate ALL errors before terminating
+ *   4. Write a JSON manifest to ~/.agents/manifests/ on success
+ *
+ * importFromGitHub() is private to this module because it depends on the
+ * GitHub Contents API; the local equivalent lives in resolvers/local.ts.
+ *
+ * Seam: to add a new import source (e.g., an npm package or a ZIP archive),
+ * add a new branch in runImport() alongside the existing 'local' / 'github'
+ * branches and implement a matching resolver module.
+ */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { getRegistryDir, getCommandsDir, getManifestsDir, getSkillsDir } from '../registry/paths.ts';

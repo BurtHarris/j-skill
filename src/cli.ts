@@ -1,3 +1,14 @@
+/**
+ * cli.ts — Entry point for the j-skill CLI.
+ *
+ * Registers all top-level Commander commands and wires them to their
+ * implementation modules in src/commands/. The render action doubles as the
+ * default (no-subcommand) action and must be registered last so that named
+ * sub-commands take precedence.
+ *
+ * Seam: add new sub-commands here by importing from src/commands/ and calling
+ * program.command(...).action(...).
+ */
 import { createCommand } from 'commander';
 import { runImport } from './commands/import.ts';
 import { runList } from './commands/list.ts';
