@@ -8,7 +8,7 @@
 
 ## Implementation Philosophy
 
-### 1. Security-First Model
+### 1. Risk Management First Model
 - **Skills are data, not code.** Never execute scripts or templates.
 - Execution boundary: `local file → render → stdout/clipboard`
 - Guarantees: no script execution, no daemons, no RCE, no background processes, no implicit triggers
