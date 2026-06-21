@@ -114,6 +114,11 @@ When working on this project, use these tools strategically:
 - **Testing**: Ensure rendering is deterministic; all rendered output must be idempotent
 - **No implementation yet**: This is the design/specification phase. Focus on getting the architecture and data structures right before coding.
 
+## Branch Notes
+
+- **`copilot-cli`** is a long-lived branch for GitHub Copilot CLI workflow validation and tool-specific experiments on this machine.
+- Treat `main` as the stable requirements/design reference unless work is explicitly intended for experimental tooling behavior.
+
 ## Out of MVP Scope
 - Background daemon or service
 - Browser extension or UI injection

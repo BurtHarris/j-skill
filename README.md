@@ -4,6 +4,10 @@ A personal control plane for portable AI skills.
 
 **Status**: Requirements gathering phase. Implementation pending.
 
+## Long-Lived Development Branches
+
+- **`copilot-cli`** — Long-lived branch for exercising GitHub Copilot CLI workflows, validating tool capabilities on this machine, and running tool-specific experiments without changing the main design baseline.
+
 ## What is j-skill?
 
 `j-skill` is a CLI tool that lets you maintain a personal registry of AI behavioral instructions and apply them consistently across different AI platforms (GitHub Copilot, Claude, ChatGPT, Microsoft 365 Copilot, Google Gemini, and others).
@@ -47,6 +51,10 @@ This project is in **requirements gathering and design phase**. We're defining:
 - What the tool should do (requirements ✓)
 - How it should behave (behavior spec ✓)
 - Where things go and how they're stored (design decisions, ongoing)
+
+Active branch note:
+- `main` remains the design and requirements baseline
+- `copilot-cli` is reserved for long-term Copilot CLI and related tool capability experiments
 
 No implementation code exists yet. Before coding begins, we'll finalize the registry structure, manifest format, and other implementation choices.
 
