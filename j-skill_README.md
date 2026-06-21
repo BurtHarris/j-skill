@@ -12,6 +12,10 @@ For complete MVP scope (in/out), see [CONTEXT.md § MVP Constraints](CONTEXT.md#
 
 **Core workflow**: `import → list → render → copy`
 
+Planning priority within MVP: **simple skills are the priority import input**, and canonical normalization should optimize for that path first.
+
+Priority output within MVP planning: **GitHub Copilot is the first export target** implemented as explicit, user-invoked export operations.
+
 ## Command Model
 
 Initial MVP commands:
@@ -144,6 +148,8 @@ Multi-file packages following the [mattpocock/skills](https://github.com/mattpoc
 ## Frontmatter
 
 YAML frontmatter for skills is based on the [skills community standard](https://github.com/mattpocock/skills) established by the `mattpocock/skills` project.
+
+For planning, `j-skill` retains control of the canonical schema details for YAML metadata and may map external fields into this canonical shape during import.
 
 MVP should support at least:
 
@@ -307,6 +313,20 @@ See [CONTEXT.md § Relationships to Existing Tools](CONTEXT.md#relationships-to-
 
 See [CONTEXT.md § Future Directions](CONTEXT.md#future-directions) for post-MVP adapters (GitHub Copilot, MS 365 Copilot, Gemini/Gems, browser extension, picker UI).
 
+Priority order for planning:
+
+1. **GitHub Copilot export adapters first**
+2. Other platform adapters after the Copilot path is credible
+
+### MCP-Style Interface Consideration (Planning)
+
+An MCP-style interface is compatible with this plan when treated as an optional Copilot adapter surface for deterministic operations (list, inspect, render), with these rules:
+
+1. Explicit user invocation only
+2. No script execution from skills
+3. No required always-on background process
+4. Canonical registry remains source of truth
+
 ---
 
 ## Related Documentation
@@ -376,4 +396,3 @@ The MVP should remain small enough to build quickly while preserving the archite
 See [CONTEXT.md § Future Directions](CONTEXT.md#future-directions) for the complete vision.
 
 ---
-

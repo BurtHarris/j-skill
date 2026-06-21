@@ -129,6 +129,11 @@ Future: Adapters for other platforms (Claude, Gemini, ChatGPT, MS 365 Copilot, b
 
 Core engine remains platform-agnostic.
 
+Planning priority refinement:
+- Priority input: simple skills
+- Priority output: GitHub Copilot
+- Canonical YAML schema details remain owned by j-skill
+
 ### 4. Modular Adapter Architecture
 
 ```
@@ -181,6 +186,17 @@ Adapters are optional. Core value works without them.
 - Track via manifests
 - Support clean install/uninstall
 - Compose multiple skill sources
+- Consider optional MCP-style tool exposure for skill discovery/rendering in Copilot contexts
+
+### MCP-Style Interface in Copilot (Planning Assessment)
+
+An MCP-style interface can fit well as a future adapter surface for GitHub Copilot because it can expose deterministic operations such as list, inspect, and render.
+
+Guardrails:
+- Keep canonical registry as source of truth.
+- Keep operations explicit and user-triggered.
+- Do not introduce script execution.
+- Do not make an always-on daemon a requirement for baseline j-skill value.
 
 ---
 
@@ -224,28 +240,28 @@ j-skill concise --copy                    # Render and copy to clipboard
 - YAML frontmatter (skills community standard)
 - Import manifests for lifecycle tracking
 - List, render, copy primitives
+- GitHub Copilot-first export adapter operations (explicit and user-invoked)
 - Error handling with complete error reporting
 - No spaces in skill names (MVP)
 
 ### Out of Scope
 
-- Background daemon
+- Required background daemon or always-on service
 - Browser extension
 - Automatic platform injection
 - Project-level defaults
 - Script or template execution
-- Platform adapters (GitHub Copilot, MS 365, Gemini, etc.)
+- Non-Copilot platform adapters (MS 365, Gemini, etc.)
 
-Adapters belong in vision, not MVP.
+MVP includes a Copilot-first adapter path while preserving a portable, platform-agnostic canonical core.
 
 ---
 
 ## Future Directions
 
-### Adapters (Post-MVP)
+### Adapters (Post-MVP Expansion)
 
 Export or compose skills for platform-specific use:
-- GitHub Copilot instructions export
 - Microsoft 365 Copilot Studio scenarios
 - Google Gems JSON export
 - Browser extension command palette

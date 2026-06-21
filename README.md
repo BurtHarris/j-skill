@@ -34,6 +34,13 @@ j-skill concise --copy              # Use it anywhere, anytime
 2. **Personal-first**: Your registry is yours. Importing never modifies projects or team configs.
 3. **GitHub Copilot-centric**: Designed for developer workflows, but extensible to other platforms.
 4. **Simple MVP**: Import → list → render → copy. That's it for v1.
+5. **Canonical ownership**: j-skill owns the YAML schema details for canonical skills and maps external formats through adapters.
+
+## Current Planning Priorities
+
+1. **Priority input**: simple skills are the first-class import and normalization target.
+2. **Priority output**: GitHub Copilot is the first export destination to optimize.
+3. **MCP interface mode**: support MCP-style Copilot integration only as an optional, explicitly invoked interface with no required always-on daemon.
 
 ## What's In This Repo
 

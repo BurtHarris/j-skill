@@ -80,6 +80,15 @@ Each import creates a manifest in `~/.agents/manifests/`:
 - Reserves `adapters` field for future platform integration (GitHub Copilot export, etc.)
 - Schema versioning allows future format evolution
 
+## Canonical Schema Ownership
+
+j-skill owns the canonical YAML schema details for skill metadata. External imports (including community skill formats) are mapped into this canonical representation during normalization.
+
+**Design implications**:
+- Canonical fields are defined by j-skill and versioned by j-skill.
+- Import adapters may be lossy but must record provenance and mapping limits.
+- Export adapters must transform from canonical schema to platform-specific shapes without mutating canonical source data.
+
 ## Platform Import Sources (MVP)
 
 ```bash
@@ -101,6 +110,21 @@ j-skill import gitea:instance.com/owner/repo
 
 **Rationale**: Unambiguous platform identification without URL parsing complexity.
 
+## Adapter Priority (Planning Guidance)
+
+Architecture and interfaces should optimize for this order:
+
+1. GitHub Copilot export path first (included in MVP scope)
+2. Additional targets after Copilot path is stable
+
+## MCP-Style Copilot Interface (Planning Guidance)
+
+An MCP-style interface is a good Copilot-facing adapter pattern for list/render operations when kept optional and explicit.
+
+**Constraint to preserve**:
+- No required daemon/background process for M0.
+- Any MCP path must be optional, explicit, and outside baseline import/list/render/copy behavior.
+
 ## Manifest Lifecycle (MVP Concepts)
 
 - **Import**: Create manifest at `~/.agents/manifests/<collection-id>.json`
@@ -119,4 +143,3 @@ These choices are **not locked**. Before implementation begins, the team should:
 - Finalize manifest schema with consideration for error reporting integration
 - Consider import idempotency (re-import same collection—overwrite manifest? Merge? Error?)
 - Decide manifest naming strategy (ID-based vs. source-based vs. collision avoidance)
-
