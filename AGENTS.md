@@ -35,7 +35,7 @@
 
 ### Planned CLI Commands
 ```bash
-j-skill import <source>        # GitHub owner/repo, local path, or HTTPS URL
+j-skill import <source>        # GitHub owner/repo, local path, or HTTPS URL (based on GitHub/npm conventions)
 j-skill list                   # List available skills
 j-skill <name>                 # Render to stdout
 j-skill <name> --copy          # Render and copy to clipboard
@@ -66,11 +66,13 @@ Each import creates a JSON manifest recording:
 ## Implementation Constraints
 
 ### Must Do
-- Parse YAML frontmatter from skill files
+- Parse YAML frontmatter (based on [skills community standard](https://github.com/mattpocock/skills))
 - Preserve Markdown formatting in output
 - Write rendered output to stdout (or copy to clipboard with `--copy`)
 - Track all imports in manifests for reproducibility
-- Support importing from GitHub, local paths, and HTTPS URLs
+- Support importing from GitHub, local paths, and HTTPS URLs following GitHub/npm conventions
+- Collect ALL errors and warnings during import, terminate only after complete error set is reported
+- Enforce naming constraints: no spaces in skill names or collection identifiers
 
 ### Must NOT Do
 - Execute any scripts or templates (e.g., no `eval`, `exec`, or interpolation)
@@ -79,6 +81,31 @@ Each import creates a JSON manifest recording:
 - Create background daemons or watchers
 - Modify project or team configurations
 - Make assumptions about platform adapters at MVP
+
+## Tooling Best Practices for Agents
+
+When working on this project, use these tools strategically:
+
+### File Editing
+- **Multiple independent edits**: Use `multi_replace_string_in_file` tool to batch edits in one operation instead of sequential single-file edits
+- **Large context**: Include 3-5 lines of surrounding code to make replacements unambiguous
+- **Avoid sequential calls**: Never call edit tools multiple times when one batched call will do
+
+### Searching & Discovery
+- **Semantic search first**: Use `semantic_search` when you need to find relevant code without knowing exact keywords or structure
+- **Specific patterns**: Use `grep_search` when you know the exact string, function name, or keyword you're looking for
+- **File discovery**: Use `file_search` with glob patterns to locate files by name/extension pattern
+- **Parallelize searches**: Run independent searches in parallel batches rather than sequentially
+
+### Reading Files
+- **Large chunks**: Read entire sections or files at once (e.g., lines 1-150) rather than multiple small reads
+- **Plan ahead**: Identify all sections you need before making read calls; read them in parallel batches
+- **Context matters**: Read surrounding code, not just the target section
+
+### General Efficiency
+- **Batch independent operations**: Never call the same tool type multiple times sequentially when parallel calls are possible
+- **Minimize tool calls**: Combine related operations; gather all context before acting
+- **No unnecessary documentation**: Don't create markdown summaries or change logs unless explicitly requested
 
 ## Development Approach
 
