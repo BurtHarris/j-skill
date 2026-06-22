@@ -1,7 +1,7 @@
 // deno.json — Deno project configuration for j-skill.
 // Read by the Deno runtime (v1.40+) when running `deno task`, `deno test`,
 // or `deno compile` from the project root.
-// Defines module metadata, Node-modules isolation, and task shortcuts:
+// Defines module metadata, Node-modules isolation, import aliases, and task shortcuts:
 //   deno task start   — run the CLI via `src/cli.ts`
 //   deno task test    — run all tests under test/
 //   deno task compile — produce a self-contained binary at bin/j-skill-bin
@@ -10,6 +10,9 @@
   "version": "0.1.0",
   "exports": "./src/index.ts",
   "nodeModulesDir": "none",
+  "imports": {
+    "@std/yaml": "jsr:@std/yaml@^1.0.0"
+  },
   "tasks": {
     "start": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run src/cli.ts",
     "test": "deno test --allow-read --allow-write --allow-env test/",

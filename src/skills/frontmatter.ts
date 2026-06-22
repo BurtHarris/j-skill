@@ -6,6 +6,8 @@
  * validateFrontmatter() enforces the required fields (`name`, `description`) and
  * naming constraints (no spaces in `name`).
  *
+ * YAML parsing is delegated to @std/yaml (Deno standard library, jsr:@std/yaml).
+ *
  * Required frontmatter fields:
  *   name        — unique identifier, no spaces
  *   description — one-line summary shown by `j-skill list`
@@ -16,6 +18,8 @@
  * Seam: add new required or optional field validation inside validateFrontmatter.
  * Extend SkillFrontmatter with typed optional fields as the schema stabilises.
  */
+
+import { parse as parseYaml } from "@std/yaml";
 
 export interface SkillFrontmatter {
   name: string;
@@ -33,53 +37,6 @@ export interface ParsedSkill {
 }
 
 const FRONTMATTER_RE = /^---[ \t]*\r?\n([\s\S]*?)\r?\n---[ \t]*\r?\n?([\s\S]*)$/;
-
-/**
- * Minimal YAML parser for skill frontmatter. Handles the subset of YAML
- * used in skill files: scalar string values, block sequences (- item), and
- * flow sequences ([a, b, c]). This avoids any external YAML library dependency.
- */
-function parseYaml(yaml: string): Record<string, unknown> {
-  const result: Record<string, unknown> = {};
-  const lines = yaml.split(/\r?\n/);
-  let i = 0;
-
-  while (i < lines.length) {
-    const trimmed = lines[i].trim();
-    if (!trimmed || trimmed.startsWith('#')) { i++; continue; }
-
-    const colonIdx = trimmed.indexOf(':');
-    if (colonIdx === -1) { i++; continue; }
-
-    const key = trimmed.slice(0, colonIdx).trim();
-    const rest = trimmed.slice(colonIdx + 1).trim();
-
-    if (rest === '') {
-      // Block sequence: collect indented `- item` lines
-      const items: string[] = [];
-      i++;
-      while (i < lines.length) {
-        const t = lines[i].trim();
-        if (t.startsWith('- ')) { items.push(t.slice(2).trim()); i++; }
-        else if (t === '') { i++; }
-        else { break; }
-      }
-      result[key] = items; // always an array — consistent with flow sequence handling
-    } else if (rest.startsWith('[') && rest.endsWith(']')) {
-      // Flow sequence: [a, b, c] — note: quoted items containing commas are not supported.
-      result[key] = rest.slice(1, -1).split(',').map(s => s.trim()).filter(s => s.length > 0);
-    } else {
-      // Scalar — strip surrounding quotes
-      const v = rest;
-      result[key] = (v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))
-        ? v.slice(1, -1)
-        : v;
-      i++;
-    }
-  }
-
-  return result;
-}
 
 export function parseFrontmatter(content: string): ParsedSkill {
   const match = FRONTMATTER_RE.exec(content);
