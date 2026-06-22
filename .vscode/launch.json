@@ -1,0 +1,65 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // ── Run / debug the CLI (F5) ──────────────────────────────────────────────
+    // Launches `src/cli.ts` under Deno with the inspector paused at startup so
+    // VS Code can attach its debugger before any code runs.
+    // Add arguments in the "args" array, e.g. ["list"] or ["import", "owner/repo"].
+    {
+      "name": "Launch CLI",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "deno",
+      "runtimeArgs": [
+        "run",
+        "--inspect-brk=9229",
+        "--allow-read",
+        "--allow-write",
+        "--allow-env",
+        "--allow-run",
+        "--allow-net"
+      ],
+      "args": ["${workspaceFolder}/src/cli.ts"],
+      "outputCapture": "std",
+      "attachSimpleCortially": true
+    },
+    // ── Debug all tests ───────────────────────────────────────────────────────
+    // Runs the full test suite under the Deno debugger.  The inspector pauses
+    // at startup so you can set breakpoints before tests execute.
+    {
+      "name": "Debug Tests",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "deno",
+      "runtimeArgs": [
+        "test",
+        "--inspect-brk=9229",
+        "--allow-read",
+        "--allow-write",
+        "--allow-env"
+      ],
+      "args": ["test/"],
+      "outputCapture": "std"
+    },
+    // ── Debug the currently open test file ───────────────────────────────────
+    // With a test file open and active, press F5 to debug only that file.
+    {
+      "name": "Debug Current Test File",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "deno",
+      "runtimeArgs": [
+        "test",
+        "--inspect-brk=9229",
+        "--allow-read",
+        "--allow-write",
+        "--allow-env"
+      ],
+      "args": ["${file}"],
+      "outputCapture": "std"
+    }
+  ]
+}

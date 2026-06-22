@@ -1,0 +1,29 @@
+{
+  // Enable the Deno language server for this workspace.
+  // This activates IntelliSense, import resolution, and inline diagnostics
+  // powered by the denoland.vscode-deno extension.
+  "deno.enable": true,
+  "deno.lint": true,
+  "deno.unstable": false,
+
+  // Use the Deno formatter for all TypeScript/JavaScript files.
+  "editor.defaultFormatter": "denoland.vscode-deno",
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+
+  // Format on save.
+  "editor.formatOnSave": true,
+
+  // Hide generated dist/ artifacts from the explorer and search.
+  "files.exclude": {
+    "dist/": true
+  },
+  "search.exclude": {
+    "dist/": true,
+    "deno.lock": true
+  }
+}

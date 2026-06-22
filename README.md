@@ -2,7 +2,7 @@
 
 A personal control plane for portable AI skills.
 
-**Status**: MVP implemented. Built with [Deno](https://deno.com/) — runs TypeScript natively with no build step.
+**Status**: MVP implemented. Built with [Deno](https://deno.com/) — distributed as a self-contained compiled binary (no runtime required).
 
 ## What is j-skill?
 
@@ -37,20 +37,46 @@ j-skill concise --copy              # Use it anywhere, anytime
 
 ## Requirements
 
-- [Deno](https://deno.com/) 2.0 or later
+For end users who install the **pre-compiled binary** from GitHub Releases: **none** — the binary is self-contained.
 
-No Node.js, no npm, no build step required.
+For contributors who want to run from source or hack on the code:
+
+- [Deno](https://deno.com/) 2.0 or later
 
 ## Installation
 
+### Pre-compiled binary (recommended)
+
+Download the latest binary for your platform from the [GitHub Releases page](https://github.com/BurtHarris/j-skill/releases):
+
+| Platform | File |
+|----------|------|
+| Windows x64 | `j-skill-windows-x64.exe` |
+| macOS Apple Silicon | `j-skill-macos-arm64` |
+| macOS Intel | `j-skill-macos-x64` |
+| Linux x64 | `j-skill-linux-x64` |
+| Linux ARM64 | `j-skill-linux-arm64` |
+
+Place the binary on your `PATH` (rename to `j-skill` on macOS/Linux and mark it executable: `chmod +x j-skill`).
+
+### Winget (Windows)
+
+Once a release is published to the [winget-pkgs](https://github.com/microsoft/winget-pkgs) community repository:
+
+```powershell
+winget install BurtHarris.j-skill
+```
+
+### Run from source (contributors)
+
 ```bash
-# Clone the repo and link the binary
+# Clone the repo and run directly
 git clone https://github.com/BurtHarris/j-skill.git
 cd j-skill
-# Run directly:
-deno run --allow-read --allow-write --allow-env --allow-run --allow-net src/cli.ts --help
-# Or install globally:
-deno install --allow-read --allow-write --allow-env --allow-run --allow-net -n j-skill src/cli.ts
+deno task start --help
+
+# Or compile a local binary
+deno task compile       # outputs dist/j-skill (current platform)
 ```
 
 ## Usage
@@ -70,18 +96,35 @@ j-skill export --target claude-code  # Export all skills to Claude Code slash co
 # Run tests
 deno task test
 
-# Run the CLI directly
+# Run the CLI directly (from source)
 deno task start import ./examples
 deno task start list
 deno task start concise
+
+# Compile a binary for the current platform
+deno task compile       # outputs dist/j-skill
+
+# Lint and format
+deno task lint
+deno task fmt
 ```
+
+### VS Code
+
+Open the folder in VS Code and accept the prompt to install the recommended extension (**Deno** — `denoland.vscode-deno`).
+
+- **F5** — launches the CLI with the debugger attached (prompts you to set CLI args in `.vscode/launch.json`)
+- **Test CodeLens** — run or debug individual tests directly from the editor
+- **Debug Tests** launch config — runs the full test suite under the debugger
 
 ## What's In This Repo
 
 - **src/** — TypeScript source (runs natively under Deno)
-- **bin/j-skill** — Deno shebang executable
+- **bin/j-skill** — Deno shebang executable (run from source)
 - **test/** — Test suite (run with `deno task test`)
 - **examples/** — Sample skill collection
+- **.vscode/** — VS Code settings, debug configs, and recommended extensions
+- **.github/workflows/release.yml** — CI workflow: compiles binaries and publishes GitHub Releases on version tags
 - **j-skill_README.md** — Full requirements and product vision
 - **AGENTS.md** — Instructions for AI agents contributing to this project
 - **DESIGN.md** — Concrete implementation design decisions

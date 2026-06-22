@@ -10,7 +10,10 @@
   },
   "tasks": {
     "start": "deno run --allow-read --allow-write --allow-env --allow-run --allow-net src/cli.ts",
-    "test": "deno test --allow-read --allow-write --allow-env test/"
+    "test": "deno test --allow-read --allow-write --allow-env test/",
+    "lint": "deno lint src/ test/",
+    "fmt": "deno fmt src/ test/",
+    "compile": "deno compile --allow-read --allow-write --allow-env --allow-run --allow-net --output dist/j-skill src/cli.ts"
   },
   "exports": "./src/index.ts"
 }

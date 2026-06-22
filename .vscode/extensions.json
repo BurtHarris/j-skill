@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    // Deno language server — provides IntelliSense, linting, formatting,
+    // test CodeLens (run/debug individual tests), and F5 debugging.
+    "denoland.vscode-deno"
+  ]
+}
