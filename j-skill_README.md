@@ -1,4 +1,4 @@
-S# j-skill Requirements
+S j-skill Requirements
 
 **For context, definitions, design principles, and project background, see [CONTEXT.md](CONTEXT.md).**
 
