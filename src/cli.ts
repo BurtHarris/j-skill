@@ -21,7 +21,7 @@ program.version('0.1.0');
 
 program
   .command('import <source>')
-  .description('Import a skill collection from GitHub, a local path, or a URL')
+  .description('Import a skill collection from GitHub, a local path, or a GitHub URL')
   .action((source: string) => {
     runImport(source).catch(err => {
       console.error(`error: ${(err as Error).message}`);

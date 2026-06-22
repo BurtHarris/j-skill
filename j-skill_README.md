@@ -251,6 +251,8 @@ j-skill import owner/repo
 j-skill import https://github.com/owner/repo
 ```
 
+Only GitHub HTTPS URLs are supported in MVP.
+
 Future support may include GitLab and generic Git URLs.
 
 ### Import Unit

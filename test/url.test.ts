@@ -19,6 +19,11 @@ test('parseSource: parses GitHub HTTPS URL with .git suffix', () => {
   assert.equal(result.repo, 'repo');
 });
 
+test('parseSource: rejects non-GitHub HTTPS URL', () => {
+  const result = parseSource('https://example.com/owner/repo');
+  assert.equal(result, null);
+});
+
 test('parseSource: parses GitHub shorthand owner/repo', () => {
   const result = parseSource('mattpocock/skills');
   assert.deepEqual(result, {
