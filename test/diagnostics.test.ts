@@ -1,15 +1,14 @@
-import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Diagnostics } from '../src/diagnostics.ts';
 
-test('Diagnostics: starts empty', () => {
+Deno.test('Diagnostics: starts empty', () => {
   const d = new Diagnostics();
   assert.equal(d.errors.length, 0);
   assert.equal(d.warnings.length, 0);
   assert.equal(d.hasErrors(), false);
 });
 
-test('Diagnostics: records errors', () => {
+Deno.test('Diagnostics: records errors', () => {
   const d = new Diagnostics();
   d.error('something went wrong', 'file.md');
   assert.equal(d.errors.length, 1);
@@ -18,7 +17,7 @@ test('Diagnostics: records errors', () => {
   assert.equal(d.hasErrors(), true);
 });
 
-test('Diagnostics: records warnings', () => {
+Deno.test('Diagnostics: records warnings', () => {
   const d = new Diagnostics();
   d.warn('deprecated field');
   assert.equal(d.warnings.length, 1);
@@ -26,7 +25,7 @@ test('Diagnostics: records warnings', () => {
   assert.equal(d.hasErrors(), false);
 });
 
-test('Diagnostics: collects multiple errors and warnings', () => {
+Deno.test('Diagnostics: collects multiple errors and warnings', () => {
   const d = new Diagnostics();
   d.error('err1');
   d.error('err2');

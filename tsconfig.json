@@ -1,3 +1,7 @@
+// tsconfig.json — TypeScript compiler options for j-skill.
+// Read by `tsc` and the VS Code TypeScript language server for type-checking
+// src/ and test/ source files.  Not used at runtime — Deno handles type-
+// stripping natively; this file exists solely for IDE/editor tooling support.
 {
   "compilerOptions": {
     "target": "ES2022",

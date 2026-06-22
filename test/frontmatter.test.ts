@@ -1,8 +1,7 @@
-import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseFrontmatter, validateFrontmatter } from '../src/skills/frontmatter.ts';
 
-test('parseFrontmatter: parses name and description', () => {
+Deno.test('parseFrontmatter: parses name and description', () => {
   const input = `---
 name: concise
 description: Respond briefly and directly.
@@ -15,7 +14,7 @@ Keep responses short.`;
   assert.equal(hasFrontmatter, true);
 });
 
-test('parseFrontmatter: parses optional fields', () => {
+Deno.test('parseFrontmatter: parses optional fields', () => {
   const input = `---
 name: concise
 description: Short responses.
@@ -33,7 +32,7 @@ Body.`;
   assert.deepEqual(frontmatter.targets, ['github-copilot']);
 });
 
-test('parseFrontmatter: no frontmatter returns full content as body', () => {
+Deno.test('parseFrontmatter: no frontmatter returns full content as body', () => {
   const input = 'Just some markdown content.';
   const { frontmatter, body, hasFrontmatter } = parseFrontmatter(input);
   assert.equal(hasFrontmatter, false);
@@ -41,7 +40,7 @@ test('parseFrontmatter: no frontmatter returns full content as body', () => {
   assert.deepEqual(frontmatter, {});
 });
 
-test('parseFrontmatter: strips frontmatter from body', () => {
+Deno.test('parseFrontmatter: strips frontmatter from body', () => {
   const input = `---
 name: test
 description: A test skill.
@@ -56,7 +55,7 @@ Do the thing.`;
   assert.ok(body.includes('## Instructions'));
 });
 
-test('parseFrontmatter: preserves markdown body order', () => {
+Deno.test('parseFrontmatter: preserves markdown body order', () => {
   const content = `---
 name: analyze
 description: Analyze things.
@@ -72,33 +71,33 @@ Do second.`;
   assert.ok(step1Idx < step2Idx);
 });
 
-test('validateFrontmatter: valid frontmatter passes', () => {
+Deno.test('validateFrontmatter: valid frontmatter passes', () => {
   const { errors, warnings } = validateFrontmatter({ name: 'concise', description: 'Brief.' }, 'test.md');
   assert.equal(errors.length, 0);
   assert.equal(warnings.length, 0);
 });
 
-test('validateFrontmatter: missing name is an error', () => {
+Deno.test('validateFrontmatter: missing name is an error', () => {
   const { errors } = validateFrontmatter({ description: 'Brief.' }, 'test.md');
   assert.ok(errors.some(e => e.includes("'name'")));
 });
 
-test('validateFrontmatter: missing description is an error', () => {
+Deno.test('validateFrontmatter: missing description is an error', () => {
   const { errors } = validateFrontmatter({ name: 'concise' }, 'test.md');
   assert.ok(errors.some(e => e.includes("'description'")));
 });
 
-test('validateFrontmatter: name with spaces is an error', () => {
+Deno.test('validateFrontmatter: name with spaces is an error', () => {
   const { errors } = validateFrontmatter({ name: 'my skill', description: 'Brief.' }, 'test.md');
   assert.ok(errors.some(e => e.includes('must not contain spaces')));
 });
 
-test('validateFrontmatter: name with underscores is valid', () => {
+Deno.test('validateFrontmatter: name with underscores is valid', () => {
   const { errors } = validateFrontmatter({ name: 'troubleshoot_v2', description: 'Brief.' }, 'test.md');
   assert.equal(errors.length, 0);
 });
 
-test('validateFrontmatter: name with hyphens is valid', () => {
+Deno.test('validateFrontmatter: name with hyphens is valid', () => {
   const { errors } = validateFrontmatter({ name: 'concise-mode', description: 'Brief.' }, 'test.md');
   assert.equal(errors.length, 0);
 });

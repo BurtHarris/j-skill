@@ -6,6 +6,8 @@
  * validateFrontmatter() enforces the required fields (`name`, `description`) and
  * naming constraints (no spaces in `name`).
  *
+ * YAML parsing is delegated to @std/yaml (Deno standard library, jsr:@std/yaml).
+ *
  * Required frontmatter fields:
  *   name        — unique identifier, no spaces
  *   description — one-line summary shown by `j-skill list`
@@ -16,7 +18,8 @@
  * Seam: add new required or optional field validation inside validateFrontmatter.
  * Extend SkillFrontmatter with typed optional fields as the schema stabilises.
  */
-import { load } from 'js-yaml';
+
+import { parse as parseYaml } from "@std/yaml";
 
 export interface SkillFrontmatter {
   name: string;
@@ -40,7 +43,7 @@ export function parseFrontmatter(content: string): ParsedSkill {
   if (!match) {
     return { frontmatter: {}, body: content.trimEnd(), hasFrontmatter: false };
   }
-  const raw = load(match[1]);
+  const raw = parseYaml(match[1]);
   const frontmatter = (raw != null && typeof raw === 'object') ? raw as Partial<SkillFrontmatter> : {};
   const body = match[2].trimEnd();
   return { frontmatter, body, hasFrontmatter: true };
