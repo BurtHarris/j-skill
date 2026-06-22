@@ -8,8 +8,8 @@
   },
   "exports": "./src/index.ts",
   "scripts": {
-    "test": "node --experimental-strip-types --test 'test/**/*.test.ts'",
-    "start": "node --experimental-strip-types src/cli.ts"
+    "test": "deno task test",
+    "start": "deno task start"
   },
   "repository": {
     "type": "git",
@@ -21,13 +21,5 @@
   "bugs": {
     "url": "https://github.com/BurtHarris/j-skill/issues"
   },
-  "homepage": "https://github.com/BurtHarris/j-skill#readme",
-  "dependencies": {
-    "commander": "^12.1.0",
-    "js-yaml": "^4.1.0"
-  },
-  "devDependencies": {
-    "@types/js-yaml": "^4.0.9",
-    "@types/node": "^22.0.0"
-  }
+  "homepage": "https://github.com/BurtHarris/j-skill#readme"
 }

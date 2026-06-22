@@ -1,30 +1,30 @@
-import { test, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { tmpdir } from 'node:os';
 import { exportToClaudeCode } from '../src/exporters/claude-code.ts';
 
-let tmpDir: string;
-let registryDir: string;
-let outputDir: string;
+function withRegistry(fn: (ctx: { tmpDir: string; registryDir: string; outputDir: string }) => void | Promise<void>): () => Promise<void> {
+  return async () => {
+    const tmpDir = await Deno.makeTempDir();
+    const registryDir = join(tmpDir, 'registry');
+    const outputDir = join(tmpDir, 'output');
+    await Deno.mkdir(join(registryDir, 'commands'), { recursive: true });
+    await Deno.mkdir(join(registryDir, 'skills'), { recursive: true });
+    await Deno.mkdir(outputDir, { recursive: true });
+    Deno.env.set('J_SKILL_REGISTRY', registryDir);
+    try {
+      await fn({ tmpDir, registryDir, outputDir });
+    } finally {
+      Deno.env.delete('J_SKILL_REGISTRY');
+      await Deno.remove(tmpDir, { recursive: true });
+    }
+  };
+}
 
-beforeEach(() => {
-  tmpDir = join(tmpdir(), `j-skill-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-  registryDir = join(tmpDir, 'registry');
-  outputDir = join(tmpDir, 'output');
-  mkdirSync(join(registryDir, 'commands'), { recursive: true });
-  mkdirSync(join(registryDir, 'skills'), { recursive: true });
-  mkdirSync(outputDir, { recursive: true });
-  process.env.J_SKILL_REGISTRY = registryDir;
-});
+function existsSync(path: string): boolean {
+  try { Deno.statSync(path); return true; } catch { return false; }
+}
 
-afterEach(() => {
-  delete process.env.J_SKILL_REGISTRY;
-  rmSync(tmpDir, { recursive: true, force: true });
-});
-
-test('exportToClaudeCode: creates one .md file per skill', () => {
+Deno.test('exportToClaudeCode: creates one .md file per skill', withRegistry(({ outputDir }) => {
   exportToClaudeCode(
     [
       { name: 'concise', body: 'Keep responses short.' },
@@ -32,56 +32,55 @@ test('exportToClaudeCode: creates one .md file per skill', () => {
     ],
     { outputDir }
   );
-  const files = readdirSync(outputDir);
+  const files = [...Deno.readDirSync(outputDir)].map(e => e.name);
   assert.ok(files.includes('concise.md'));
   assert.ok(files.includes('troubleshoot.md'));
   assert.equal(files.length, 2);
-});
+}));
 
-test('exportToClaudeCode: file content equals skill body', () => {
+Deno.test('exportToClaudeCode: file content equals skill body', withRegistry(({ outputDir }) => {
   exportToClaudeCode(
     [{ name: 'concise', body: 'Keep responses short.' }],
     { outputDir }
   );
-  const content = readFileSync(join(outputDir, 'concise.md'), 'utf-8');
+  const content = Deno.readTextFileSync(join(outputDir, 'concise.md'));
   assert.ok(content.includes('Keep responses short.'));
-});
+}));
 
-test('exportToClaudeCode: output files end with a newline', () => {
+Deno.test('exportToClaudeCode: output files end with a newline', withRegistry(({ outputDir }) => {
   exportToClaudeCode(
     [{ name: 'x', body: 'Content.' }],
     { outputDir }
   );
-  const content = readFileSync(join(outputDir, 'x.md'), 'utf-8');
+  const content = Deno.readTextFileSync(join(outputDir, 'x.md'));
   assert.ok(content.endsWith('\n'));
-});
+}));
 
-test('exportToClaudeCode: output files contain no YAML frontmatter delimiters', () => {
+Deno.test('exportToClaudeCode: output files contain no YAML frontmatter delimiters', withRegistry(({ outputDir }) => {
   exportToClaudeCode(
     [{ name: 'concise', body: 'Keep responses short.' }],
     { outputDir }
   );
-  const content = readFileSync(join(outputDir, 'concise.md'), 'utf-8');
+  const content = Deno.readTextFileSync(join(outputDir, 'concise.md'));
   assert.ok(!content.includes('---'));
-});
+}));
 
-test('exportToClaudeCode: creates output directory if it does not exist', () => {
+Deno.test('exportToClaudeCode: creates output directory if it does not exist', withRegistry(({ outputDir }) => {
   const nestedDir = join(outputDir, 'new', 'nested');
   exportToClaudeCode(
     [{ name: 'x', body: 'Content.' }],
     { outputDir: nestedDir }
   );
   assert.ok(existsSync(join(nestedDir, 'x.md')));
-});
+}));
 
-// Populate registry and verify runExport produces expected Claude Code output
-test('runExport claude-code: exports all registry skills when no names given', async () => {
-  writeFileSync(
+Deno.test('runExport claude-code: exports all registry skills when no names given', withRegistry(async ({ registryDir, outputDir }) => {
+  Deno.writeTextFileSync(
     join(registryDir, 'commands', 'concise.md'),
     '---\nname: concise\ndescription: Brief.\n---\nKeep responses short.\n'
   );
-  mkdirSync(join(registryDir, 'skills', 'diagnose'), { recursive: true });
-  writeFileSync(
+  await Deno.mkdir(join(registryDir, 'skills', 'diagnose'), { recursive: true });
+  Deno.writeTextFileSync(
     join(registryDir, 'skills', 'diagnose', 'SKILL.md'),
     '---\nname: diagnose\ndescription: Debug methodically.\n---\nDebug steps here.\n'
   );
@@ -91,14 +90,14 @@ test('runExport claude-code: exports all registry skills when no names given', a
 
   assert.ok(existsSync(join(outputDir, 'concise.md')));
   assert.ok(existsSync(join(outputDir, 'diagnose.md')));
-});
+}));
 
-test('runExport claude-code: exports only named skills when names are given', async () => {
-  writeFileSync(
+Deno.test('runExport claude-code: exports only named skills when names are given', withRegistry(async ({ registryDir, outputDir }) => {
+  Deno.writeTextFileSync(
     join(registryDir, 'commands', 'concise.md'),
     '---\nname: concise\ndescription: Brief.\n---\nKeep responses short.\n'
   );
-  writeFileSync(
+  Deno.writeTextFileSync(
     join(registryDir, 'commands', 'verbose.md'),
     '---\nname: verbose\ndescription: Detailed.\n---\nProvide full detail.\n'
   );
@@ -108,10 +107,10 @@ test('runExport claude-code: exports only named skills when names are given', as
 
   assert.ok(existsSync(join(outputDir, 'concise.md')));
   assert.ok(!existsSync(join(outputDir, 'verbose.md')));
-});
+}));
 
-test('runExport claude-code: exported file body matches registry skill body', async () => {
-  writeFileSync(
+Deno.test('runExport claude-code: exported file body matches registry skill body', withRegistry(async ({ registryDir, outputDir }) => {
+  Deno.writeTextFileSync(
     join(registryDir, 'commands', 'concise.md'),
     '---\nname: concise\ndescription: Brief.\n---\nKeep responses short.\n'
   );
@@ -119,17 +118,17 @@ test('runExport claude-code: exported file body matches registry skill body', as
   const { runExport } = await import('../src/commands/export.ts');
   await runExport(['concise'], { target: 'claude-code', output: outputDir });
 
-  const content = readFileSync(join(outputDir, 'concise.md'), 'utf-8');
+  const content = Deno.readTextFileSync(join(outputDir, 'concise.md'));
   assert.ok(content.includes('Keep responses short.'));
   assert.ok(!content.includes('name: concise'));
   assert.ok(!content.includes('---'));
-});
+}));
 
-test('runExport claude-code: sets exitCode=1 for unknown skill name', async () => {
+Deno.test('runExport claude-code: sets exitCode=1 for unknown skill name', withRegistry(async (_ctx) => {
   const { runExport } = await import('../src/commands/export.ts');
   const original = process.exitCode;
   process.exitCode = 0;
-  await runExport(['no-such-skill'], { target: 'claude-code', output: outputDir });
+  await runExport(['no-such-skill'], { target: 'claude-code', output: '/tmp/test-output' });
   assert.equal(process.exitCode, 1);
   process.exitCode = original;
-});
+}));
