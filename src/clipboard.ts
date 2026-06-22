@@ -22,8 +22,12 @@ export async function copyToClipboard(text: string): Promise<void> {
       stderr: "null",
     }).spawn();
     const writer = child.stdin.getWriter();
-    await writer.write(input);
-    await writer.close();
+    try {
+      await writer.write(input);
+      await writer.close();
+    } finally {
+      writer.releaseLock();
+    }
     const status = await child.status;
     if (!status.success) {
       throw new Error(`${program} exited with code ${status.code}`);

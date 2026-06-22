@@ -97,5 +97,3 @@ switch (subcommand) {
     break;
   }
 }
-
-Deno.exit(Deno.exitCode);

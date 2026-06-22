@@ -111,7 +111,7 @@ When working on this project, use these tools strategically:
 
 - **Runtime**: [Deno](https://deno.com/) 2.x — runs TypeScript natively, no build step required
 - **Standard library**: `https://deno.land/std@0.224.0/` (path, fs, assert, testing/bdd, cli)
-- **YAML**: `npm:js-yaml@4` (via Deno's npm compatibility)
+- **YAML**: `npm:js-yaml@4` (imported directly via Deno's npm compatibility)
 - **Testing**: `deno task test` — runs `deno test --allow-read --allow-write --allow-env test/`
 - **Running**: `deno task start <args>` or `deno run --allow-read --allow-write --allow-env --allow-run --allow-net src/cli.ts <args>`
 - **Key source modules**: `src/cli.ts` (entry point), `src/commands/`, `src/registry/`, `src/resolvers/`, `src/skills/`, `src/exporters/`

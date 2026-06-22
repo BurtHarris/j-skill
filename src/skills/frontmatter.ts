@@ -16,7 +16,7 @@
  * Seam: add new required or optional field validation inside validateFrontmatter.
  * Extend SkillFrontmatter with typed optional fields as the schema stabilises.
  */
-import { load as parseYaml } from "@std/yaml";
+import { load as parseYaml } from "npm:js-yaml@4";
 
 export interface SkillFrontmatter {
   name: string;
@@ -41,7 +41,7 @@ export function parseFrontmatter(content: string): ParsedSkill {
     return { frontmatter: {}, body: content.trimEnd(), hasFrontmatter: false };
   }
   const raw = parseYaml(match[1]);
-  const frontmatter = (raw != null && typeof raw === 'object') ? raw as Partial<SkillFrontmatter> : {};
+  const frontmatter = (raw != null && typeof raw === "object") ? raw as Partial<SkillFrontmatter> : {};
   const body = match[2].trimEnd();
   return { frontmatter, body, hasFrontmatter: true };
 }
