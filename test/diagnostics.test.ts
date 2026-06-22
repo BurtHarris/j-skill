@@ -1,37 +1,36 @@
-import { test } from 'node:test';
-import assert from 'node:assert/strict';
-import { Diagnostics } from '../src/diagnostics.ts';
+import { assertEquals } from "@std/assert";
+import { Diagnostics } from "../src/diagnostics.ts";
 
-test('Diagnostics: starts empty', () => {
+Deno.test("Diagnostics: starts empty", () => {
   const d = new Diagnostics();
-  assert.equal(d.errors.length, 0);
-  assert.equal(d.warnings.length, 0);
-  assert.equal(d.hasErrors(), false);
+  assertEquals(d.errors.length, 0);
+  assertEquals(d.warnings.length, 0);
+  assertEquals(d.hasErrors(), false);
 });
 
-test('Diagnostics: records errors', () => {
+Deno.test("Diagnostics: records errors", () => {
   const d = new Diagnostics();
-  d.error('something went wrong', 'file.md');
-  assert.equal(d.errors.length, 1);
-  assert.equal(d.errors[0].message, 'something went wrong');
-  assert.equal(d.errors[0].file, 'file.md');
-  assert.equal(d.hasErrors(), true);
+  d.error("something went wrong", "file.md");
+  assertEquals(d.errors.length, 1);
+  assertEquals(d.errors[0].message, "something went wrong");
+  assertEquals(d.errors[0].file, "file.md");
+  assertEquals(d.hasErrors(), true);
 });
 
-test('Diagnostics: records warnings', () => {
+Deno.test("Diagnostics: records warnings", () => {
   const d = new Diagnostics();
-  d.warn('deprecated field');
-  assert.equal(d.warnings.length, 1);
-  assert.equal(d.warnings[0].severity, 'warning');
-  assert.equal(d.hasErrors(), false);
+  d.warn("deprecated field");
+  assertEquals(d.warnings.length, 1);
+  assertEquals(d.warnings[0].severity, "warning");
+  assertEquals(d.hasErrors(), false);
 });
 
-test('Diagnostics: collects multiple errors and warnings', () => {
+Deno.test("Diagnostics: collects multiple errors and warnings", () => {
   const d = new Diagnostics();
-  d.error('err1');
-  d.error('err2');
-  d.warn('warn1');
-  assert.equal(d.errors.length, 2);
-  assert.equal(d.warnings.length, 1);
-  assert.equal(d.hasErrors(), true);
+  d.error("err1");
+  d.error("err2");
+  d.warn("warn1");
+  assertEquals(d.errors.length, 2);
+  assertEquals(d.warnings.length, 1);
+  assertEquals(d.hasErrors(), true);
 });

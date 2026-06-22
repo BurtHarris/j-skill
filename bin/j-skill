@@ -1,0 +1,15 @@
+#!/usr/bin/env -S deno run --allow-read --allow-write --allow-env --allow-run --allow-net
+/**
+ * bin/j-skill — Deno executable entry point for the j-skill CLI.
+ *
+ * This shebang script delegates immediately to src/cli.ts. Deno runs
+ * TypeScript natively, so no build step is required.
+ *
+ * Permissions granted:
+ *   --allow-read   read skill files and the local registry
+ *   --allow-write  write imported skills and manifests to the registry
+ *   --allow-env    read J_SKILL_REGISTRY and HOME environment variables
+ *   --allow-run    invoke clipboard utilities (pbcopy, clip, xclip, xsel)
+ *   --allow-net    fetch skill collections from the GitHub Contents API
+ */
+import "../src/cli.ts";

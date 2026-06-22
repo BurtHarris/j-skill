@@ -19,17 +19,17 @@
  * implement a module in src/exporters/, and add a dispatch branch at the bottom
  * of runExport().
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { getCommandsDir, getSkillsDir } from '../registry/paths.ts';
-import { parseFrontmatter } from '../skills/frontmatter.ts';
-import { resolveSkill } from '../skills/resolver.ts';
-import { exportToCopilotChat } from '../exporters/copilot-chat.ts';
-import { exportToClaudeCode } from '../exporters/claude-code.ts';
-import { Diagnostics } from '../diagnostics.ts';
+import { join } from "@std/path";
+import { existsSync } from "@std/fs";
+import { getCommandsDir, getSkillsDir } from "../registry/paths.ts";
+import { parseFrontmatter } from "../skills/frontmatter.ts";
+import { resolveSkill } from "../skills/resolver.ts";
+import { exportToCopilotChat } from "../exporters/copilot-chat.ts";
+import { exportToClaudeCode } from "../exporters/claude-code.ts";
+import { Diagnostics } from "../diagnostics.ts";
 
 /** All recognised --target values. */
-const SUPPORTED_TARGETS = ['copilot-chat', 'claude-code'] as const;
+const SUPPORTED_TARGETS = ["copilot-chat", "claude-code"] as const;
 type ExportTarget = (typeof SUPPORTED_TARGETS)[number];
 
 export interface ExportOptions {
@@ -47,22 +47,23 @@ function getAllRegistrySkills(): Array<{ name: string; body: string }> {
 
   const commandsDir = getCommandsDir();
   if (existsSync(commandsDir)) {
-    for (const f of readdirSync(commandsDir)) {
-      if (!f.endsWith('.md')) continue;
-      const content = readFileSync(join(commandsDir, f), 'utf-8');
+    for (const e of Deno.readDirSync(commandsDir)) {
+      if (!e.isFile || !e.name.endsWith(".md")) continue;
+      const content = Deno.readTextFileSync(join(commandsDir, e.name));
       const { frontmatter, body } = parseFrontmatter(content);
-      const name = (frontmatter.name as string | undefined) ?? f.replace(/\.md$/, '');
+      const name = (frontmatter.name as string | undefined) ??
+        e.name.replace(/\.md$/, "");
       result.push({ name, body });
     }
   }
 
   const skillsDir = getSkillsDir();
   if (existsSync(skillsDir)) {
-    for (const entry of readdirSync(skillsDir, { withFileTypes: true })) {
-      if (!entry.isDirectory()) continue;
-      const skillPath = join(skillsDir, entry.name, 'SKILL.md');
+    for (const entry of Deno.readDirSync(skillsDir)) {
+      if (!entry.isDirectory) continue;
+      const skillPath = join(skillsDir, entry.name, "SKILL.md");
       if (!existsSync(skillPath)) continue;
-      const content = readFileSync(skillPath, 'utf-8');
+      const content = Deno.readTextFileSync(skillPath);
       const { frontmatter, body } = parseFrontmatter(content);
       const name = (frontmatter.name as string | undefined) ?? entry.name;
       result.push({ name, body });
@@ -76,16 +77,21 @@ function getAllRegistrySkills(): Array<{ name: string; body: string }> {
  * Main export action. Called by the CLI with the list of optional skill names
  * and the parsed options object containing `target` and optional `output`.
  */
-export async function runExport(skillNames: string[], options: ExportOptions): Promise<void> {
+export async function runExport(
+  skillNames: string[],
+  options: ExportOptions,
+): Promise<void> {
   const diagnostics = new Diagnostics();
 
   // Validate --target
   if (!(SUPPORTED_TARGETS as readonly string[]).includes(options.target)) {
     diagnostics.error(
-      `unknown target '${options.target}'. Supported targets: ${SUPPORTED_TARGETS.join(', ')}`
+      `unknown target '${options.target}'. Supported targets: ${
+        SUPPORTED_TARGETS.join(", ")
+      }`,
     );
     diagnostics.report();
-    process.exitCode = 1;
+    Deno.exitCode = 1;
     return;
   }
   const target = options.target as ExportTarget;
@@ -110,25 +116,33 @@ export async function runExport(skillNames: string[], options: ExportOptions): P
 
   diagnostics.report();
   if (diagnostics.hasErrors()) {
-    process.exitCode = 1;
+    Deno.exitCode = 1;
     return;
   }
 
   if (skills.length === 0) {
-    console.error('no skills to export. Run `j-skill import <source>` to add skills first.');
-    process.exitCode = 1;
+    console.error(
+      "no skills to export. Run `j-skill import <source>` to add skills first.",
+    );
+    Deno.exitCode = 1;
     return;
   }
 
   // Dispatch to the appropriate exporter
-  if (target === 'copilot-chat') {
-    const outputPath = options.output ?? join(process.cwd(), '.github', 'copilot-instructions.md');
+  if (target === "copilot-chat") {
+    const outputPath = options.output ??
+      join(Deno.cwd(), ".github", "copilot-instructions.md");
     exportToCopilotChat(skills, { outputPath });
-    console.log(`exported ${skills.length} skill(s) to ${outputPath} (copilot-chat)`);
-  } else if (target === 'claude-code') {
-    const outputDir = options.output ?? join(process.cwd(), '.claude', 'commands');
+    console.log(
+      `exported ${skills.length} skill(s) to ${outputPath} (copilot-chat)`,
+    );
+  } else if (target === "claude-code") {
+    const outputDir = options.output ??
+      join(Deno.cwd(), ".claude", "commands");
     exportToClaudeCode(skills, { outputDir });
-    console.log(`exported ${skills.length} skill(s) to ${outputDir} (claude-code)`);
+    console.log(
+      `exported ${skills.length} skill(s) to ${outputDir} (claude-code)`,
+    );
     for (const skill of skills) {
       console.log(`  - ${skill.name}`);
     }

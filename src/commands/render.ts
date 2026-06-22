@@ -13,25 +13,30 @@
  * Seam: to support rendering a specific version or tag of a skill, thread a
  * version option through runRender() and resolveSkill().
  */
-import { resolveSkill } from '../skills/resolver.ts';
-import { copyToClipboard } from '../clipboard.ts';
+import { resolveSkill } from "../skills/resolver.ts";
+import { copyToClipboard } from "../clipboard.ts";
 
-export function runRender(name: string, options: { copy?: boolean }): void {
+export async function runRender(
+  name: string,
+  options: { copy?: boolean },
+): Promise<void> {
   const skill = resolveSkill(name);
   if (!skill) {
     console.error(`skill '${name}' not found`);
-    process.exitCode = 1;
+    Deno.exitCode = 1;
     return;
   }
 
-  process.stdout.write(skill.body + '\n');
+  console.log(skill.body);
 
   if (options.copy) {
     try {
-      copyToClipboard(skill.body);
+      await copyToClipboard(skill.body);
       console.error(`copied '${name}' to clipboard`);
     } catch (e) {
-      console.error(`warning: could not copy to clipboard: ${(e as Error).message}`);
+      console.error(
+        `warning: could not copy to clipboard: ${(e as Error).message}`,
+      );
     }
   }
 }

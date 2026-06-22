@@ -18,8 +18,7 @@
  * description), add an optional `includeHeader` flag to ClaudeCodeExportOptions
  * and prepend `<!-- description: <desc> -->` or similar before the body.
  */
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from "@std/path";
 
 /** Minimal skill representation required by this exporter. */
 export interface SkillForExport {
@@ -39,11 +38,11 @@ export interface ClaudeCodeExportOptions {
  */
 export function exportToClaudeCode(
   skills: SkillForExport[],
-  options: ClaudeCodeExportOptions
+  options: ClaudeCodeExportOptions,
 ): void {
-  mkdirSync(options.outputDir, { recursive: true });
+  Deno.mkdirSync(options.outputDir, { recursive: true });
   for (const skill of skills) {
     const filePath = join(options.outputDir, `${skill.name}.md`);
-    writeFileSync(filePath, skill.body + '\n', 'utf-8');
+    Deno.writeTextFileSync(filePath, skill.body + "\n");
   }
 }

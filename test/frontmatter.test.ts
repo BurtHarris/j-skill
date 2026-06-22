@@ -1,21 +1,20 @@
-import { test } from 'node:test';
-import assert from 'node:assert/strict';
-import { parseFrontmatter, validateFrontmatter } from '../src/skills/frontmatter.ts';
+import { assertEquals, assertFalse } from "@std/assert";
+import { parseFrontmatter, validateFrontmatter } from "../src/skills/frontmatter.ts";
 
-test('parseFrontmatter: parses name and description', () => {
+Deno.test("parseFrontmatter: parses name and description", () => {
   const input = `---
 name: concise
 description: Respond briefly and directly.
 ---
 Keep responses short.`;
   const { frontmatter, body, hasFrontmatter } = parseFrontmatter(input);
-  assert.equal(frontmatter.name, 'concise');
-  assert.equal(frontmatter.description, 'Respond briefly and directly.');
-  assert.equal(body, 'Keep responses short.');
-  assert.equal(hasFrontmatter, true);
+  assertEquals(frontmatter.name, "concise");
+  assertEquals(frontmatter.description, "Respond briefly and directly.");
+  assertEquals(body, "Keep responses short.");
+  assertEquals(hasFrontmatter, true);
 });
 
-test('parseFrontmatter: parses optional fields', () => {
+Deno.test("parseFrontmatter: parses optional fields", () => {
   const input = `---
 name: concise
 description: Short responses.
@@ -28,20 +27,20 @@ targets:
 ---
 Body.`;
   const { frontmatter } = parseFrontmatter(input);
-  assert.deepEqual(frontmatter.aliases, ['short']);
-  assert.deepEqual(frontmatter.tags, ['style']);
-  assert.deepEqual(frontmatter.targets, ['github-copilot']);
+  assertEquals(frontmatter.aliases, ["short"]);
+  assertEquals(frontmatter.tags, ["style"]);
+  assertEquals(frontmatter.targets, ["github-copilot"]);
 });
 
-test('parseFrontmatter: no frontmatter returns full content as body', () => {
-  const input = 'Just some markdown content.';
+Deno.test("parseFrontmatter: no frontmatter returns full content as body", () => {
+  const input = "Just some markdown content.";
   const { frontmatter, body, hasFrontmatter } = parseFrontmatter(input);
-  assert.equal(hasFrontmatter, false);
-  assert.equal(body, 'Just some markdown content.');
-  assert.deepEqual(frontmatter, {});
+  assertEquals(hasFrontmatter, false);
+  assertEquals(body, "Just some markdown content.");
+  assertEquals(frontmatter, {});
 });
 
-test('parseFrontmatter: strips frontmatter from body', () => {
+Deno.test("parseFrontmatter: strips frontmatter from body", () => {
   const input = `---
 name: test
 description: A test skill.
@@ -51,12 +50,12 @@ description: A test skill.
 
 Do the thing.`;
   const { body } = parseFrontmatter(input);
-  assert.ok(!body.includes('---'));
-  assert.ok(!body.includes('name: test'));
-  assert.ok(body.includes('## Instructions'));
+  assertFalse(body.includes("---"));
+  assertFalse(body.includes("name: test"));
+  assertEquals(body.includes("## Instructions"), true);
 });
 
-test('parseFrontmatter: preserves markdown body order', () => {
+Deno.test("parseFrontmatter: preserves markdown body order", () => {
   const content = `---
 name: analyze
 description: Analyze things.
@@ -67,38 +66,50 @@ Do first.
 # Step 2
 Do second.`;
   const { body } = parseFrontmatter(content);
-  const step1Idx = body.indexOf('Step 1');
-  const step2Idx = body.indexOf('Step 2');
-  assert.ok(step1Idx < step2Idx);
+  const step1Idx = body.indexOf("Step 1");
+  const step2Idx = body.indexOf("Step 2");
+  assertEquals(step1Idx < step2Idx, true);
 });
 
-test('validateFrontmatter: valid frontmatter passes', () => {
-  const { errors, warnings } = validateFrontmatter({ name: 'concise', description: 'Brief.' }, 'test.md');
-  assert.equal(errors.length, 0);
-  assert.equal(warnings.length, 0);
+Deno.test("validateFrontmatter: valid frontmatter passes", () => {
+  const { errors, warnings } = validateFrontmatter(
+    { name: "concise", description: "Brief." },
+    "test.md",
+  );
+  assertEquals(errors.length, 0);
+  assertEquals(warnings.length, 0);
 });
 
-test('validateFrontmatter: missing name is an error', () => {
-  const { errors } = validateFrontmatter({ description: 'Brief.' }, 'test.md');
-  assert.ok(errors.some(e => e.includes("'name'")));
+Deno.test("validateFrontmatter: missing name is an error", () => {
+  const { errors } = validateFrontmatter({ description: "Brief." }, "test.md");
+  assertEquals(errors.some((e) => e.includes("'name'")), true);
 });
 
-test('validateFrontmatter: missing description is an error', () => {
-  const { errors } = validateFrontmatter({ name: 'concise' }, 'test.md');
-  assert.ok(errors.some(e => e.includes("'description'")));
+Deno.test("validateFrontmatter: missing description is an error", () => {
+  const { errors } = validateFrontmatter({ name: "concise" }, "test.md");
+  assertEquals(errors.some((e) => e.includes("'description'")), true);
 });
 
-test('validateFrontmatter: name with spaces is an error', () => {
-  const { errors } = validateFrontmatter({ name: 'my skill', description: 'Brief.' }, 'test.md');
-  assert.ok(errors.some(e => e.includes('must not contain spaces')));
+Deno.test("validateFrontmatter: name with spaces is an error", () => {
+  const { errors } = validateFrontmatter(
+    { name: "my skill", description: "Brief." },
+    "test.md",
+  );
+  assertEquals(errors.some((e) => e.includes("must not contain spaces")), true);
 });
 
-test('validateFrontmatter: name with underscores is valid', () => {
-  const { errors } = validateFrontmatter({ name: 'troubleshoot_v2', description: 'Brief.' }, 'test.md');
-  assert.equal(errors.length, 0);
+Deno.test("validateFrontmatter: name with underscores is valid", () => {
+  const { errors } = validateFrontmatter(
+    { name: "troubleshoot_v2", description: "Brief." },
+    "test.md",
+  );
+  assertEquals(errors.length, 0);
 });
 
-test('validateFrontmatter: name with hyphens is valid', () => {
-  const { errors } = validateFrontmatter({ name: 'concise-mode', description: 'Brief.' }, 'test.md');
-  assert.equal(errors.length, 0);
+Deno.test("validateFrontmatter: name with hyphens is valid", () => {
+  const { errors } = validateFrontmatter(
+    { name: "concise-mode", description: "Brief." },
+    "test.md",
+  );
+  assertEquals(errors.length, 0);
 });

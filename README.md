@@ -2,7 +2,7 @@
 
 A personal control plane for portable AI skills.
 
-**Status**: Requirements gathering phase. Implementation pending.
+**Status**: MVP implemented. Built with [Deno](https://deno.com/) — runs TypeScript natively with no build step.
 
 ## What is j-skill?
 
@@ -35,27 +35,56 @@ j-skill concise --copy              # Use it anywhere, anytime
 3. **GitHub Copilot-centric**: Designed for developer workflows, but extensible to other platforms.
 4. **Simple MVP**: Import → list → render → copy. That's it for v1.
 
+## Requirements
+
+- [Deno](https://deno.com/) 2.0 or later
+
+No Node.js, no npm, no build step required.
+
+## Installation
+
+```bash
+# Clone the repo and link the binary
+git clone https://github.com/BurtHarris/j-skill.git
+cd j-skill
+# Run directly:
+deno run --allow-read --allow-write --allow-env --allow-run --allow-net src/cli.ts --help
+# Or install globally:
+deno install --allow-read --allow-write --allow-env --allow-run --allow-net -n j-skill src/cli.ts
+```
+
+## Usage
+
+```bash
+j-skill import <source>              # Import from GitHub owner/repo, URL, or local path
+j-skill list                         # List available skills
+j-skill <name>                       # Render a skill to stdout
+j-skill <name> --copy                # Render and copy to clipboard
+j-skill export --target copilot-chat # Export all skills to GitHub Copilot format
+j-skill export --target claude-code  # Export all skills to Claude Code slash commands
+```
+
+## Development
+
+```bash
+# Run tests
+deno task test
+
+# Run the CLI directly
+deno task start import ./examples
+deno task start list
+deno task start concise
+```
+
 ## What's In This Repo
 
+- **src/** — TypeScript source (runs natively under Deno)
+- **bin/j-skill** — Deno shebang executable
+- **test/** — Test suite (run with `deno task test`)
+- **examples/** — Sample skill collection
 - **j-skill_README.md** — Full requirements and product vision
 - **AGENTS.md** — Instructions for AI agents contributing to this project
-- **DESIGN.md** — Concrete implementation design decisions (registry layout, file structure, manifest format, etc.)
-
-## Status
-
-This project is in **requirements gathering and design phase**. We're defining:
-- What the tool should do (requirements ✓)
-- How it should behave (behavior spec ✓)
-- Where things go and how they're stored (design decisions, ongoing)
-
-No implementation code exists yet. Before coding begins, we'll finalize the registry structure, manifest format, and other implementation choices.
-
-## Next Steps
-
-1. Validate requirements with potential users
-2. Finalize registry and data structure design
-3. Choose technology stack (likely Node.js/TypeScript)
-4. Begin MVP implementation
+- **DESIGN.md** — Concrete implementation design decisions
 
 ## References
 

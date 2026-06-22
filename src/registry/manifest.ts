@@ -12,21 +12,21 @@
  * platform adapter state (GitHub Copilot, Claude, etc.). It is always written as
  * an empty object in MVP.
  */
-import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
-import { getManifestsDir } from './paths.ts';
+import { join } from "@std/path";
+import { existsSync } from "@std/fs";
+import { getManifestsDir } from "./paths.ts";
 
 export interface SkillEntry {
   name: string;
-  type: 'command' | 'agent-skill';
+  type: "command" | "agent-skill";
   path: string;
 }
 
 export interface Manifest {
-  schemaVersion: '0.1';
+  schemaVersion: "0.1";
   name: string;
   source: string;
-  scope: 'user';
+  scope: "user";
   importedAt: string;
   files: string[];
   skills: SkillEntry[];
@@ -34,23 +34,25 @@ export interface Manifest {
 }
 
 export function saveManifest(manifest: Manifest): string {
-  const safeName = manifest.name.replace(/[/\\:*?"<>|]/g, '_');
+  const safeName = manifest.name.replace(/[/\\:*?"<>|]/g, "_");
   const filePath = join(getManifestsDir(), `${safeName}.json`);
-  writeFileSync(filePath, JSON.stringify(manifest, null, 2) + '\n', 'utf-8');
+  Deno.writeTextFileSync(filePath, JSON.stringify(manifest, null, 2) + "\n");
   return filePath;
 }
 
 export function loadManifest(name: string): Manifest | null {
-  const safeName = name.replace(/[/\\:*?"<>|]/g, '_');
+  const safeName = name.replace(/[/\\:*?"<>|]/g, "_");
   const filePath = join(getManifestsDir(), `${safeName}.json`);
   if (!existsSync(filePath)) return null;
-  return JSON.parse(readFileSync(filePath, 'utf-8')) as Manifest;
+  return JSON.parse(Deno.readTextFileSync(filePath)) as Manifest;
 }
 
 export function listManifests(): Manifest[] {
   const dir = getManifestsDir();
   if (!existsSync(dir)) return [];
-  return readdirSync(dir)
-    .filter(f => f.endsWith('.json'))
-    .map(f => JSON.parse(readFileSync(join(dir, f), 'utf-8')) as Manifest);
+  return [...Deno.readDirSync(dir)]
+    .filter((e) => e.isFile && e.name.endsWith(".json"))
+    .map((e) =>
+      JSON.parse(Deno.readTextFileSync(join(dir, e.name))) as Manifest
+    );
 }

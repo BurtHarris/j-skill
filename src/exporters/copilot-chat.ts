@@ -12,10 +12,9 @@
  *
  * Seam: to support appending to an existing instructions file rather than
  * overwriting it, add an `append` flag to CopilotChatExportOptions and use
- * appendFileSync / readFileSync + write here.
+ * the appropriate file write mode here.
  */
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { dirname } from 'node:path';
+import { dirname } from "@std/path";
 
 /** Minimal skill representation required by this exporter. */
 export interface SkillForExport {
@@ -36,11 +35,11 @@ export interface CopilotChatExportOptions {
  */
 export function exportToCopilotChat(
   skills: SkillForExport[],
-  options: CopilotChatExportOptions
+  options: CopilotChatExportOptions,
 ): void {
-  const sections = skills.map(s => `## ${s.name}\n\n${s.body}`);
-  const content = sections.join('\n\n') + '\n';
+  const sections = skills.map((s) => `## ${s.name}\n\n${s.body}`);
+  const content = sections.join("\n\n") + "\n";
 
-  mkdirSync(dirname(options.outputPath), { recursive: true });
-  writeFileSync(options.outputPath, content, 'utf-8');
+  Deno.mkdirSync(dirname(options.outputPath), { recursive: true });
+  Deno.writeTextFileSync(options.outputPath, content);
 }

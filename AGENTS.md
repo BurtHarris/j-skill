@@ -109,10 +109,13 @@ When working on this project, use these tools strategically:
 
 ## Development Approach
 
-- **Technology**: Likely Node.js/TypeScript (to be determined)
-- **Key components to build**: CLI scaffolding, YAML parser, GitHub resolver, registry manager, manifest generator
-- **Testing**: Ensure rendering is deterministic; all rendered output must be idempotent
-- **No implementation yet**: This is the design/specification phase. Focus on getting the architecture and data structures right before coding.
+- **Runtime**: [Deno](https://deno.com/) 2.x — runs TypeScript natively, no build step required
+- **Standard library**: `https://deno.land/std@0.224.0/` (path, fs, assert, testing/bdd, cli)
+- **YAML**: `npm:js-yaml@4` (via Deno's npm compatibility)
+- **Testing**: `deno task test` — runs `deno test --allow-read --allow-write --allow-env test/`
+- **Running**: `deno task start <args>` or `deno run --allow-read --allow-write --allow-env --allow-run --allow-net src/cli.ts <args>`
+- **Key source modules**: `src/cli.ts` (entry point), `src/commands/`, `src/registry/`, `src/resolvers/`, `src/skills/`, `src/exporters/`
+- **No Node.js**: Do not use `node:` imports, `process.*`, or npm packages requiring Node APIs
 
 ## Out of MVP Scope
 - Background daemon or service
