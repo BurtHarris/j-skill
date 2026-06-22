@@ -124,11 +124,11 @@ Deno.test('runExport claude-code: exported file body matches registry skill body
   assert.ok(!content.includes('---'));
 }));
 
-Deno.test('runExport claude-code: sets exitCode=1 for unknown skill name', withRegistry(async (_ctx) => {
+Deno.test('runExport claude-code: sets exitCode=1 for unknown skill name', withRegistry(async ({ tmpDir }) => {
   const { runExport } = await import('../src/commands/export.ts');
   const original = process.exitCode;
   process.exitCode = 0;
-  await runExport(['no-such-skill'], { target: 'claude-code', output: '/tmp/test-output' });
+  await runExport(['no-such-skill'], { target: 'claude-code', output: tmpDir + '/test-output' });
   assert.equal(process.exitCode, 1);
   process.exitCode = original;
 }));

@@ -64,9 +64,9 @@ function parseYaml(yaml: string): Record<string, unknown> {
         else if (t === '') { i++; }
         else { break; }
       }
-      result[key] = items.length > 0 ? items : null;
+      result[key] = items; // always an array — consistent with flow sequence handling
     } else if (rest.startsWith('[') && rest.endsWith(']')) {
-      // Flow sequence: [a, b, c]
+      // Flow sequence: [a, b, c] — note: quoted items containing commas are not supported.
       result[key] = rest.slice(1, -1).split(',').map(s => s.trim()).filter(s => s.length > 0);
     } else {
       // Scalar — strip surrounding quotes
