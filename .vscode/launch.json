@@ -21,8 +21,7 @@
         "--allow-net"
       ],
       "args": ["${workspaceFolder}/src/cli.ts"],
-      "outputCapture": "std",
-      "attachSimpleCortially": true
+      "outputCapture": "std"
     },
     // ── Debug all tests ───────────────────────────────────────────────────────
     // Runs the full test suite under the Deno debugger.  The inspector pauses
